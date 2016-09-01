@@ -148,38 +148,32 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);  // Create MFRC522 instance
 void setup() {
   int x;
   int i = 0;
-	Serial.begin(9600);		// Initialize serial communications with the PC
+	Serial.begin(250000);		// Initialize serial communications with the PC
 	while (!Serial);		// Do nothing if no serial port is opened (added for Arduinos based on ATMEGA32U4)
 	SPI.begin();			// Init SPI bus
 	mfrc522.PCD_Init();		// Init MFRC522
   mfrc522.PCD_AntennaOn();
   mfrc522.PCD_SetAntennaGain(RxGain_max );
   x = mfrc522.PCD_GetAntennaGain();
+  Serial.print("Antenna Gain in DB: ");
   Serial.print(x);
+  Serial.print("\n");
 }
 
 void loop() {
   int i = 0 ;
   byte result[64];
   String hexval ;
+
   mfrc522.PCD_SetRegisterBitMask(FIFODataReg,0x80);
   mfrc522.PCD_SetRegisterBitMask(FIFOLevelReg,0x80);
   mfrc522.PCD_WriteRegister(CommandReg, PCD_Receive);
-  
-
 	mfrc522.PCD_ReadRegister(FIFODataReg, 64,result, 0);
-  while (i < 64)
-  {
-    Serial.print("FIFO Data Reg At Offset: ");
-    Serial.print(i);
-    Serial.print(" ==>  0x");
-    
-    hexval = String(result[i],HEX);
-    Serial.print(hexval);
-    Serial.print("\n");
-    ;
-  }
-  Serial.print("Done\n");
-  //delay(10);
+  Serial.print("FIFO Data Reg At Offset: ");
+  hexval = String(result[0],HEX);
+  Serial.print(" ==>  0x");
+  Serial.print(hexval);
+  Serial.print("\n");
+
 
 }
